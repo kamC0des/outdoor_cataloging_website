@@ -1,0 +1,80 @@
+.ratings-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.back-link {
+    color: #49914A;
+    text-decoration: none;
+}
+
+.ratings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.rating-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rating-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-avatar, .default-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.default-avatar {
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+}
+
+.rating-value {
+    color: #FFD700; /* Gold color for stars */
+}
+
+.rating-comment {
+    margin: 1rem 0;
+    line-height: 1.6;
+}
+
+.rating-date {
+    color: #666;
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+.no-ratings {
+    text-align: center;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+}

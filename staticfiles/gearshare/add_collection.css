@@ -1,0 +1,51 @@
+/* static/gearshare/add_collection.css */
+.add-collection-container {
+    min-height: calc(100vh - 200px);
+    padding: 20px 0;
+}
+
+.title {
+    font-family: 'Boldonse', system-ui;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.form-control {
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.form-control:focus {
+    border-color: #49914A;
+    box-shadow: 0 0 0 0.25rem rgba(73, 145, 74, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #49914A;
+    border-color: #49914A;
+}
+.btn-custom {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.btn-custom:hover {
+    background-color: #218838;
+    color: white;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

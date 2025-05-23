@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gearshare/view_ratings.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+{% endblock %}
+
+{% block content %}
+<div class="ratings-container">
+    <div class="header">
+        <h1>Ratings for {{ item.title }}</h1>
+        <a href="{% url 'gearshare:item_detail' slug=item.slug id=item.id %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Item
+        </a>
+    </div>
+
+    {% if ratings %}
+    <div class="ratings-list">
+        {% for rating in ratings %}
+        <div class="rating-card">
+            <div class="rating-header">
+                <div class="user-info">
+                    {% if rating.user.profile.profile_picture %}
+                    <img src="{{ rating.user.profile.profile_picture.url }}" alt="{{ rating.user.profile.real_name }}" class="user-avatar">
+                    {% else %}
+                    <div class="default-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                    <span class="user-name">
+                        {% if rating.user.profile %}
+                            {{ rating.user.profile.real_name }}
+                        {% else %}
+                            {{ rating.user.username }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="rating-value">
+                    {% if request.user.is_authenticated and rating.user.id == request.user.id %}
+
+                        <div class="rating-actions">
+                            <a href="{% url 'gearshare:add_rating' item_id=item.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'gearshare:delete_rating' rating_id=rating.id %}" 
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Are you sure you want to delete this rating?')">
+                                Delete
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                
+
+
+            </div>
+            <div class="rating-comment">
+                <p>{{ rating.comment }}</p>
+            </div>
+            <div class="rating-stars">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= rating.rating %}
+                        <i class="fas fa-star star-yellow"></i>
+                    {% else %}
+                        <i class="far fa-star"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="rating-date">
+                <small>{{ rating.created_at|date:"F j, Y" }}</small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-ratings">
+        <p>No ratings yet for this item.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

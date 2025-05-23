@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gearshare/edit_collection.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="edit-collection-container">
+    <div class="container">
+        <h1 class="mb-4">Edit Collection: {{ collection.title }}</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="edit_details">
+                    <div class="card mb-4">
+                        <div class="card-header" style="background-color: #8D99AE">
+                            <h3>Collection Details</h3>
+                        </div>
+                        <div class="card-body">
+                            {% for field in form %}
+                                {% if field.name == "is_public" %}
+                                    <!-- ski[] -->
+                                {% elif field.name == "allowed_users" %}
+                                    {% if not collection.is_public %}
+                                        {% if is_librarian %}
+                                            <div class="form-group" id="allowedUsersField">
+                                                {{ field.label_tag }}
+                                                {{ field }}
+                                                {{ field.errors }}
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% elif field.name == "items" %}
+                                    <!-- just skip -->
+                                {% else %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'gearshare:view_collection' collection.id %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color: #8D99AE">
+                        <h3>Manage Items</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Add Items to Collection</h4>
+                        {% if available_items %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="add_items">
+                            <div class="mb-3">
+                                <select name="add_items" multiple size="5" id="addItems" class="form-select">
+                                    {% for item in available_items %}
+                                    <option value="{{ item.id }}">{{ item.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-success">Add Selected</button>
+                        </form>
+                        {% else %}
+                        <p class="text-muted">No items available to add</p>
+                        {% endif %}
+                        
+                        <hr>
+                        
+                        <h4>Current Items in Collection</h4>
+                        {% if current_items %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="remove_item">
+                            <ul class="list-group mb-3">
+                                {% for item in current_items %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ item.title }}
+                                    <button type="submit" name="remove_item_id" value="{{ item.id }}" class="btn btn-sm btn-danger">Remove</button>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </form>
+                        {% else %}
+                        <p class="text-muted">No items in this collection</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if request.user.profile == collection.creator %}
+            <hr>
+            <div class="mt-4 text-end">
+                <form method="post" action="{% url 'gearshare:delete_collection' collection.id %}" onsubmit="return confirm('Are you sure you want to delete this collection?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Collection</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<!-- dynamically show the "allowed users" list based off of whether "is public" is checked -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const isPublicCheckbox = document.querySelector('input[name="is_public"]');
+        const allowedUsersField = document.getElementById('allowedUsersField');
+    
+        function toggleAllowedUsers() {
+            if (isPublicCheckbox.checked) {
+                allowedUsersField.style.display = "none";
+            } else {
+                allowedUsersField.style.display = "block";
+            }
+        }
+    
+        // Initial check on page load
+        toggleAllowedUsers();
+    
+        // Update whenever checkbox is clicked
+        isPublicCheckbox.addEventListener("change", toggleAllowedUsers);
+    });
+    </script>
+{% endblock %}  

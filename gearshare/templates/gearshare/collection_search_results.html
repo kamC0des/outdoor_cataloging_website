@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gearshare/collections.css' %}">
+<style>
+    .back-button-container {
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="back-button-container">
+        <a href="{% url 'gearshare:collections' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Collections
+        </a>
+    </div>
+
+    <h2>Collection Search Results for "{{ query }}"</h2>
+    
+    <div class="search-container mb-4">
+        <form action="{% url 'gearshare:collection_search' %}" method="GET">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search collections..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    {% if results %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for collection in results %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ collection.title }}
+                        {% if collection.is_public %}
+                            <span class="badge bg-success">Public</span>
+                        {% else %}
+                            <span class="badge bg-danger">Private</span>
+                        {% endif %}
+                    </h5>
+                    <p class="card-text">{{ collection.description|default:"No description" }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'gearshare:view_collection' collection.id %}" class="btn btn-outline-primary btn-sm">View Collection</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No collections found matching "{{ query }}".
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

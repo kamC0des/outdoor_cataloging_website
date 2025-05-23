@@ -1,0 +1,140 @@
+
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+<div class="container mt-4">
+    <h2 style="margin-bottom: 30px;">Your Gear</h2>
+
+
+    <h2 style="font-size: 20px;">Notifications</h2>
+         <div class="card mb-4">
+             <div class="card-body">
+                 {% if notifications %}
+                 <ul class="list-group list-group-flush">
+                     {% for note in notifications %}
+                     <li class="list-group-item">
+                         {% if not note.is_read %}
+                             <strong>{{ note.message }}</strong><br>
+                         {% else %}
+                             {{ note.message }}<br>
+                         {% endif %}
+                         <small class="">{{ note.timestamp|naturaltime }}</small>
+                     </li>
+                     {% endfor %}
+                 </ul>
+                 {% else %}
+                 <p>No notifications yet.</p>
+                 {% endif %}
+             </div>
+         </div>
+        {% if notifications %}
+        <!-- Clear All Button -->
+        <form method="POST" action="{% url 'gearshare:clear_notifications' %}" class="mb-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Clear All Notifications</button>
+        </form>
+        {% endif %}
+    
+    <div class="row">
+        <!-- Pending Requests -->
+        <div class="col-md-6">
+            <h3 style="font-size: 20px;">Pending Requests</h3>
+            {% if pending_requests %}
+                <div class="list-group">
+                    {% for request in pending_requests %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5>{{ request.item.title }}</h5>
+                                    <p>
+                                        Requested: {{ request.request_date|date:"M d, Y" }}<br>
+                                        Dates: {{ request.requested_start_date|date:"M d, Y" }} to {{ request.requested_end_date|date:"M d, Y" }}<br>
+                                        Status: Pending approval
+                                    </p>
+                                </div>
+                                <form method="POST" action="{% url 'gearshare:delete_borrow_request' request.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm" 
+                                            onclick="return confirm('Are you sure you want to cancel this request?')">
+                                        <i class="fas fa-trash"></i> Cancel Request
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>You have no pending requests.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Currently Borrowed Items -->
+        <div class="col-md-6">
+            <h3 style="font-size: 20px;">Currently Borrowed</h3>
+            {% if borrowed_items %}
+                <div class="list-group">
+                    {% for item in borrowed_items %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5>{{ item.title }}</h5>
+                                    <small class="text-muted">Due: {{ item.due_date|date:"M d, Y" }}</small>
+                                </div>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal{{ item.id }}">
+                                    Return Item
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Return Item Modal - This should be outside the list-group-item but inside the for loop -->
+                        <div class="modal fade return-modal" id="returnModal{{ item.id }}" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="POST" action="{% url 'gearshare:checkout_page' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="returnModalLabel">Return {{ item.title }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Item Condition:</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="condition" id="conditionGood{{ item.id }}" value="available" checked>
+                                                    <label class="form-check-label" for="conditionGood{{ item.id }}">Item is in good condition</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="condition" id="conditionRepair{{ item.id }}" value="maintenance">
+                                                    <label class="form-check-label" for="conditionRepair{{ item.id }}">Item needs repair</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="condition" id="conditionLost{{ item.id }}" value="lost">
+                                                    <label class="form-check-label" for="conditionLost{{ item.id }}">Item is lost or severely damaged</label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="notes{{ item.id }}" class="form-label">Additional Notes:</label>
+                                                <textarea class="form-control" id="notes{{ item.id }}" name="notes" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Confirm Return</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    You currently have no borrowed items.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

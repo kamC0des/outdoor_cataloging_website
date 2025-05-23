@@ -1,0 +1,24 @@
+/* static/gearshare/collections.css */
+.collections-container {
+    padding: 20px 0;
+    min-height: calc(100vh - 200px); /* Adjust based on your header/footer height */
+}
+
+.title {
+    font-family: 'Boldonse', system-ui;
+    font-weight: 400;
+    color: #F5F5DC;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-title {
+    color: #49914A;
+    font-weight: bold;
+}

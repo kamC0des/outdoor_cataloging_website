@@ -1,0 +1,213 @@
+/* static/gearshare/base.css */
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
+body {
+    '''background: linear-gradient(to bottom, #A8C090, #DDE8C6);'''
+    background: #F8F9FA;
+    background-size: cover;
+    image-rendering: crisp-edges;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* General layout styles */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Navigation Bar */
+/* base.css */
+nav.navbar {
+    /* background: #49914A !important; /* Important temporarily for debugging */
+     background: linear-gradient(135deg, #8D99AE, #4C6A92); /* Adding gradient for a more modern look */
+    padding: 5px 20px; /* Adjusted padding for better spacing */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Softer shadow for a modern feel */
+    /* Reduced height for a more compact navbar */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.nav-right {
+
+    align-self: center;
+    padding: 10px 20px;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+
+}
+
+.nav-home-link {
+    font-size: 50px;
+    color: white;
+    font-family: 'Russo One', sans-serif;
+    text-decoration: none;
+    align-self: center;
+    padding: 10px 20px;
+    transition: text-shadow 0.15s ease;
+    display: inline-block;
+}
+
+.nav-home-link:hover {
+    color: #126226;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.navbar .nav-link {
+     color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: #3A86FF; /* Vibrant modern blue */
+    border-radius: 12px; /* Softer corners */
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(58, 134, 255, 0.3); /* Subtle shadow */
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.nav-link:hover {
+    background-color: #2F70E8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(58, 134, 255, 0.4);
+}
+
+/* Google login button in navbar */
+.google-login-button {
+    margin-left: 10px;
+}
+
+/* Footer styling */
+.footer {
+    text-align: center;
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-top: 2px solid #ddd;
+    background: linear-gradient(135deg, #8D99AE, #4C6A92);
+}
+
+.navbar .logo-title {
+    display: flex;
+    flex-direction: row;
+    padding-right: 20px;
+    align-items: center;
+    text-decoration: none;
+}
+.logo-title img{
+    margin-right: -25px;
+    display: block;
+}
+.logo-title span{
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Profile picture in navbar */
+.profile-pic-nav {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #49914A;
+}
+.pfp {
+    border-radius: 50%;
+    object-fit: cover;
+}
+@media (max-width: 1255px) {
+      nav.navbar {
+        flex-direction: column;
+        align-items: stretch;
+        height: auto; /* allow height to grow */
+        padding: 10px 0;
+  }
+
+  .nav-right {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 10px;
+    gap: 10px;
+    padding: 0 20px;
+  }
+
+  .navbar .nav-link {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-home-link {
+    text-align: center;
+    padding: 10px 0;
+  }
+  .logo-title{
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+  }
+
+}
+/* Custom Font Class */
+.boldonse-regular {
+    font-family: "Boldonse", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    color: #F5F5DC;
+    font-size: 30px;
+
+}
+.agreement-content {
+    font-family: 'Times New Roman', serif;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+  }
+  
+  .agreement-content h4 {
+    color: #2c3e50;
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 10px;
+  }
+  
+  .list-group-numbered {
+    counter-reset: item;
+  }
+  
+  .list-group-numbered > li {
+    padding-left: 2.5em;
+    position: relative;
+  }
+  
+  .list-group-numbered > li:before {
+    content: counter(item) ".";
+    counter-increment: item;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+  }

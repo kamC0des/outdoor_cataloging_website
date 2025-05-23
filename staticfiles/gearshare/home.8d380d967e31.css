@@ -1,0 +1,54 @@
+/* static/gearshare/home.css */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 160px);
+    /* Account for navbar and footer */
+    text-align: center;
+}
+
+.home-header {
+    font-size: 100px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: white;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+    font-family: 'Russo One', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: glow 1.5s infinite alternate;
+}
+
+.home-box {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: 'Russo One', sans-serif;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+    width: 350px;
+}
+
+/* Profile picture on home page */
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #49914A;
+    margin: 10px 0;
+}
+
+/* Glow animation for header */
+@keyframes glow {
+    from {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #28a745, 0 0 20px #28a745;
+    }
+
+    to {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #28a745, 0 0 40px #28a745;
+    }
+}

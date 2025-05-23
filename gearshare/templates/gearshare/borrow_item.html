@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h3>Request to Borrow: {{ item.title }}</h3>
+        </div>
+        <div class="card-body">
+          <form method="post" id="borrowForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="agreement_accepted" id="agreementAccepted" value="false">
+            
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#borrowAgreementModal">
+                Review Terms & Submit Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'gearshare/borrow_agreement.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Enable/disable agree button based on checkbox
+  const agreeCheckbox = document.getElementById('agreeCheckbox');
+  const confirmBtn = document.getElementById('confirmAgreement');
+  
+  agreeCheckbox.addEventListener('change', function() {
+    confirmBtn.disabled = !this.checked;
+  });
+  
+  // Handle agreement confirmation
+  confirmBtn.addEventListener('click', function() {
+    document.getElementById('agreementAccepted').value = 'true';
+    document.getElementById('borrowForm').submit();
+    $('#borrowAgreementModal').modal('hide');
+  });
+  
+  // Prevent form submission without agreement
+  document.getElementById('borrowForm').addEventListener('submit', function(e) {
+    if(document.getElementById('agreementAccepted').value !== 'true') {
+      e.preventDefault();
+      alert('You must agree to the borrower agreement before submitting your request.');
+    }
+  });
+});
+</script>
+{% endblock %}

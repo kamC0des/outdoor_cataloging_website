@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gearshare/add_collection.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="add-collection-container">
+    <div class="container my-5">
+        <div class="form-container">
+            <h1 class="text-center mb-4">Add a Collection</h1>
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.title.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                </div>
+                
+                {% if is_librarian %}
+                <div class="mb-3 form-check">
+                    {{ form.is_public }}
+                    {{ form.is_public.label_tag }}
+                </div>
+                
+                {% endif %}
+
+                <!-- <div class="mb-3">
+                    <label for="id_items">Items to include:</label>
+                    {{ form.items }}
+                </div>
+                 -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Create Collection</button>
+                    <a href="{% url 'gearshare:collections' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

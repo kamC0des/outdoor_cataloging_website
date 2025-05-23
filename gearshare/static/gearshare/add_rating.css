@@ -1,0 +1,64 @@
+.btn-custom {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn-custom:hover {
+    background-color: #218838;
+    color: white;
+}
+
+.rating-form-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+    font-family: 'Boldonse', system-ui;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+.add-rating-page {
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+}
+
+.rating-form label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.rating-form input,
+.rating-form textarea,
+.rating-form select {
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+.rating-form input:focus,
+.rating-form textarea:focus,
+.rating-form select:focus {
+    border-color: #49914A;
+    box-shadow: 0 0 0 0.25rem rgba(73, 145, 74, 0.25);
+    outline: none;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}

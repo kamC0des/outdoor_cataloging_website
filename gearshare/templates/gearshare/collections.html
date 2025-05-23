@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'gearshare/collections.css' %}">
+<style>
+    .btn-custom {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3A86FF;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    
+    .collection-card {
+        transition: transform 0.2s;
+    }
+    
+    .collection-card:hover {
+        transform: scale(1.03);
+    }
+    
+    .no-collections-alert {
+        background-color: #3A86FF !important;
+        color: #F5F5DC !important;
+        border: none;
+    }
+
+    .private-badge {
+        background-color: #dc3545;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 8px;
+    }
+    .public-badge {
+        background-color: #28a745;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/b1a82e13ac.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+<div class="collections-container">
+    <div class="container text-center mt-5">
+        <h1 class="title mb-4">Collections</h1>
+        <div class="search-container">
+            <form action="{% url 'gearshare:collection_search' %}" method="GET">
+                <div class="input-group mx-auto" style="max-width: 500px;">
+                    <input type="text" name="q" class="form-control" placeholder="Search collections..." value="{{ request.GET.q }}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for collection in collections %}
+                {% if collection.is_public or not is_anonymous %}
+                <div class="col">
+                    <div class="card h-100 collection-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ collection.title }}
+                                {% if collection.is_public %}
+                                    <span class="public-badge">Public</span>
+                                {% else %}
+                                    <span class="private-badge">Private</span>
+                                {% endif %}
+                            </h5>
+                            <p class="card-text">{{ collection.description|default:"No description" }}</p>
+                        </div>
+                        <div class="card-footer text-end">
+                            {% if collection.is_public or request.user.profile.is_librarian or request.user.profile in collection.allowed_users.all %}
+                                <a href="{% url 'gearshare:view_collection' collection.id %}" class="btn btn-outline-primary btn-sm">View Collection</a>
+                            {% elif request.user.profile in collection.requested_users.all %}
+                                <button class="btn btn-outline-secondary btn-sm" disabled>Request Pending</button>
+                            {% else %}
+                                <form method="POST" action="{% url 'gearshare:request_collection_access' collection.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-warning btn-sm">Request Access</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% empty %}
+                <div class="col">
+                    <div class="alert alert-warning w-100 rounded-4 no-collections-alert">
+                        No Available Collections.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        {% if request.user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{% url 'gearshare:add_collection' %}" class="btn btn-custom">Add a Collection</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

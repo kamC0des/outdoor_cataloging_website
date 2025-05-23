@@ -1,0 +1,97 @@
+.borrow-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+}
+
+.borrow-btn:hover {
+  background-color: #218838;
+}
+
+.borrow-btn.disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #333;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #28a745;
+}
+/* static/gearshare/item_detail.css */
+.item-detail-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 15px;
+}
+
+.item-card {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #F8F8F8;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.item-image {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+}
+
+.item-image img {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+}
+
+.item-title {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.item-description {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.item-meta p {
+  margin-bottom: 0.8rem;
+}
+
+.item-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .item-card {
+      flex-direction: column;
+  }
+  
+  .item-image,
+  .item-info {
+      padding: 15px;
+  }
+}

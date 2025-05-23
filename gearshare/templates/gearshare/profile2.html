@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block extra_css %}
+<!-- Bootstrap Modal Only -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<!-- FontAwesome 5 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static 'gearshare/base.css' %}">
+<link rel="stylesheet" href="{% static 'gearshare/profile2.css' %}">
+<style>
+    /* Credit Score Styles */
+    .credit-score {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .credit-score-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    .credit-good {
+        color: #28a745;
+    }
+    .credit-warning {
+        color: #ffc107;
+    }
+    .credit-bad {
+        color: #dc3545;
+    }
+    .credit-icon {
+        margin-left: 8px;
+    }
+    .credit-alert {
+        margin-top: 10px;
+    }
+    
+    /* Profile Picture Styles */
+    .profile_p {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #2B2D42;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    .profile_p:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Table Styles */
+    .profile-table {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .profile-table td {
+        padding: 8px 5px;
+        vertical-align: top;
+    }
+    .profile-table tr td:first-child {
+        font-weight: bold;
+        width: 120px;
+    }
+    .profile-table tr td:nth-child(2) {
+        width: 10px;
+    }
+    
+    /* Borrowing Status */
+    .borrowing-status {
+        margin-top: 25px;
+    }
+    .status-item {
+        margin-bottom: 10px;
+    }
+    
+    /* Notification and Checked-Out Items Styles */
+    .list-group-item {
+        background-color: transparent;
+    }
+    .text-light {
+        color: #F5F5DC !important;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/b1a82e13ac.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+    <div class="main">
+        <h2>Personal Information:</h2>
+        <div class="card mb-4" style="background-color: #8D99AE">
+            <div class="card-body">
+                <!-- Profile Picture with Clickable Modal Trigger -->
+                <div class="text-center mb-4">
+                    <img class="profile_p"
+                         src="{{ profile.profile_picture.url }}"
+                         alt="Profile Picture"
+                         data-bs-toggle="modal"
+                         data-bs-target="#uploadProfilePictureModal"
+                         style="cursor: pointer;">
+                </div>
+
+
+                <!-- Credit Score Display -->
+                <!-- <div class="credit-score text-center">
+                    <h4>Credit Score</h4>
+                    <div class="credit-score-value 
+                        {% if profile.credit_score >= 80 %}credit-good
+                        {% elif profile.credit_score >= 60 %}credit-warning
+                        {% else %}credit-bad{% endif %}">
+                        {{ profile.credit_score }}/100
+                        {% if profile.credit_score < 60 %}
+                            <i class="fas fa-exclamation-triangle credit-icon"></i>
+                        {% elif profile.credit_score < 80 %}
+                            <i class="fas fa-info-circle credit-icon"></i>
+                        {% else %}
+                            <i class="fas fa-check-circle credit-icon"></i>
+                        {% endif %}
+                    </div>
+                    
+                    {% if profile.credit_score < 60 %}
+                        <div class="alert alert-danger credit-alert">
+                            <i class="fas fa-exclamation-circle"></i> 
+                            Your credit score is too low to borrow items (minimum 60 required)
+                        </div>
+                    {% elif profile.credit_score < 80 %}
+                        <div class="alert alert-warning credit-alert">
+                            <i class="fas fa-info-circle"></i> 
+                            Good standing, but try to keep your score above 80
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success credit-alert">
+                            <i class="fas fa-check-circle"></i> 
+                            Excellent credit standing
+                        </div>
+                    {% endif %}
+                </div> -->
+
+                <!-- Profile Information Table -->
+                <table class="profile-table">
+                    <tbody style="color: #F5F5DC;">
+                        <tr>
+                            <td>Name</td>
+                            <td>:</td>
+                            <td>{{ profile.real_name|default:"No real name" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>:</td>
+                            <td class="td-email">{{ profile.email|default:"No email" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Member Type</td>
+                            <td>:</td>
+                            {% if request.session.user_data.is_librarian %}
+                            <td>Librarian</td>
+                            {% else %}
+                            <td>Patron</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td>Member Since</td>
+                            <td>:</td>
+                            <td>{{ profile.join_date|date:"F j, Y" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Modal for Uploading Profile Picture -->
+                <div class="modal fade" id="uploadProfilePictureModal" tabindex="-1"
+                    aria-labelledby="uploadProfilePictureModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="uploadProfilePictureModalLabel">Upload Profile Picture</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" enctype="multipart/form-data"
+                                    action="{% url 'gearshare:upload_profile_picture' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="profilePicture" class="form-label">Choose a profile picture:</label>
+                                        <input type="file" class="form-control" id="profilePicture"
+                                            name="profile_picture" accept="image/*" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gear Sharing App</title>
+
+    {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <!-- Page-Specific CSS -->
+    <link rel="stylesheet" href="{% static 'gearshare/base.css' %}">
+
+    {% block extra_css %}{% endblock %}
+    <!-- Common CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Russo+One&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <div class="wrapper">
+    <!-- Navbar for every page -->
+    <nav class="navbar">
+        <a href="{% url 'gearshare:home' %}" class="logo-title">
+            <img class="pfp" src="{% static 'images/GS_smooth_logo_clean.png' %}" width="100" height="auto">
+            <span class="boldonse-regular"> GearShare</span>
+        </a>
+
+
+        <div class="nav-right">
+            {% if request.user.is_authenticated %}
+            {% if request.session.user_data.is_librarian %}
+            <a href="{% url 'gearshare:librarian_dashboard' %}" class="nav-link">Gearmaster Dashboard</a>
+            {% endif %}
+            <a href="{% url 'gearshare:items' %}" class="nav-link">View Items</a>
+            <a href="{% url 'gearshare:collections' %}" class="nav-link">View Collections</a>
+            <a href="{% url 'gearshare:checkout_page' %}" class="nav-link" >
+                <i class="fas fa-shopping-cart"></i> My Gear
+            </a>
+            <a href="{% url 'gearshare:profile' %}" class="nav-link">Profile</a>
+            
+            <a href="{% url 'gearshare:sign_out' %}" class="nav-link">Sign Out</a>
+            {% else %}
+            <a href="{% url 'gearshare:items' %}" class="nav-link">Browse Items</a>
+            <a href="{% url 'gearshare:collections' %}" class="nav-link">Browse Collections</a>
+            <div class="google-login-button">
+                <div id="g_id_onload" data-client_id="541084739424-278hsbmup92bka0jj6ceai2brk9cld6l"
+                data-context="signin" data-ux_mode="popup" data-login_uri="{{ google_redirect_uri }}"
+                data-itp_support="true">
+            </div>
+                <div class="g_id_signin" data-type="icon" data-shape="pill" data-theme="filled_blue"
+                    data-text="signin_with" data-size="large">
+                </div>
+            </div>
+            {% endif %}
+            <div id="notification-popup" class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+                {% for message in messages %}
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <strong class="me-auto">Notification</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer" style="background-color: #49914A;">
+        <p>&copy; 2025 GearShare. All rights reserved.</p>
+        <p class="disclaimer">This system is a class project and is not monitored. No real information should be
+            submitted.</p>
+    </footer>
+    
+</div>
+<script>
+    // Auto-hide notifications after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+        var toastList = toastElList.map(function(toastEl) {
+            return new bootstrap.Toast(toastEl, {delay: 5000});
+        });
+        toastList.forEach(toast => toast.show());
+    });
+    </script>
+</body>
+
+</html>

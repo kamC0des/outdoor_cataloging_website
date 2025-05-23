@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'gearshare/view_collection.css' %}">
+<style>
+    .collection-header {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .item-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    .item-card {
+        transition: transform 0.2s;
+    }
+    .item-card:hover {
+        transform: scale(1.03);
+    }
+    .private-badge {
+        background-color: #dc3545;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 8px;
+    }
+    .public-badge {
+        background-color: #28a745;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 8px;
+    }
+    .access-list {
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    .access-list h5 {
+        margin-bottom: 0.5rem;
+    }
+    .search-container {
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="view-collection-container">
+    <div class="container">
+        <div class="collection-header text-center">
+            <h1>{{ collection.title }}
+                {% if collection.is_public %}
+                    <span class="public-badge">Public</span>
+                {% else %}
+                    <span class="private-badge">Private</span>
+                {% endif %}
+            </h1>
+            <p class="lead">{{ collection.description|default:"No description" }}</p>
+            <p class="text-muted">Created by: {{ collection.creator.real_name }}</p>
+            <p class="text-muted">{{ items.count }} item{{ items.count|pluralize }} in this collection</p>
+            
+            {% if not collection.is_public %}
+            <div class="access-list text-start mt-3">
+                <h5>Users with access to this collection:</h5>
+                <ul class="list-unstyled">
+                    <li><strong>{{ collection.creator.real_name }}</strong> (Creator)</li>
+                    {% for user in collection.allowed_users.all %}
+                        <li>{{ user.real_name }}</li>
+                    {% empty %}
+                        <li>No additional users have access</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        <div class="search-container">
+            <form action="{% url 'gearshare:collection_item_search' collection.id %}" method="GET">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search items in this collection..." value="{{ request.GET.q }}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="items-section">
+            <h2 class="mb-4">Items in this Collection</h2>
+            
+            {% if items %}
+            <div class="item-grid">
+                {% for item in items %}
+                <div class="card item-card">
+                    <a href="{% url 'gearshare:item_detail' slug=item.slug id=item.id %}?next={{ request.get_full_path }}">
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.title }}</h5>
+                            <p class="card-text text-muted">{{ item.description|truncatechars:100 }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                {% if not collection.is_public and not request.user.profile in collection.allowed_users.all and not request.user.profile.is_librarian %}
+                    You do not have permission to view items in this private collection.
+                {% else %}
+                    This collection doesn't have any items yet.
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% if is_librarian or request.user.profile == collection.creator %}
+        <div class="collection-actions mt-4">
+            <a href="{% url 'gearshare:edit_collection' collection.id %}" class="btn btn-outline-primary">Edit Collection</a>
+        </div>
+        {% endif %}
+        <div class="mt-3">
+            <a href="{% url 'gearshare:collections' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Collections
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gearshare/librarian_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="requests-container">
+
+    <div class="borrow-requests">
+        <div class="header">
+            <h1>Pending Borrow Requests</h1>
+        </div>
+        {% if borrow_requests %}
+        <div class="requests-list">
+            <ol class="list-group list-group">
+                {% for request in borrow_requests %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="request-card">
+                        <div class="request-user">
+                            <div class="fw-bold">
+                                {% if request.user.profile_picture %}
+                                <img src="{{ request.user.profile_picture.url }}" class="user-avatar">
+                                {% else %}
+                                <div class="default-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                {% endif %}
+                                <span class="user-name">{{ request.user.real_name }}</span>
+                            </div>
+                        </div>
+                        <div class="request-content">
+                            <div class="request-info">
+                                <div>
+                                    <strong>Item Requested:</strong> {{ request.item.title }}
+                                </div>
+                                <div>
+                                    <strong>Message:</strong> {{ request.message }}
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <form method="post" action="{% url 'gearshare:accept_borrow_request' request.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-accept">Accept</button>
+                                </form>
+                                <form method="post" action="{% url 'gearshare:deny_borrow_request' request.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-deny">Deny</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- add end for here -->
+                 {% endfor %}
+            </ol>
+        </div>
+        {% else %}
+        <div class="no-requests">
+            <p>No borrow requests at the moment.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="collection-requests">
+        <div class="header">
+            <h1>Pending Collection Requests</h1>
+        </div>
+        {% if collection_requests %}
+        <div class="requests-list">
+            <ol class="list-group list-group">
+                {% for request in collection_requests %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="request-card">
+                        <div class="request-user">
+                            <div class="fw-bold">
+                                {% if request.user.profile_picture %}
+                                <img src="{{ request.user.profile_picture.url }}" class="user-avatar">
+                                {% else %}
+                                <div class="default-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                {% endif %}
+                                <span class="user-name">{{ request.user.real_name }}</span>
+                            </div>
+                        </div>
+                        <div class="request-content">
+                            <div class="request-info">
+                                <div>
+                                    <strong>Collection Access Requested:</strong> {{ request.collection.title }}
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <form method="post" action="{% url 'gearshare:accept_collection_request' request.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-accept">Accept</button>
+                                </form>
+                                <form method="post" action="{% url 'gearshare:deny_collection_request' request.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-deny">Deny</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- add end for here -->
+                 {% endfor %}
+            </ol>
+        </div>
+        {% else %}
+        <div class="no-requests">
+            <p>No collection requests at the moment.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<hr>
+
+<div class="user-container">
+    <div class="header">
+        <h1>User Directory</h1>
+    </div>
+    {% if users %}
+    <div class="user-list">
+        <ol class="list-group list-group">
+            {% for user in users %}
+            <li class="list-group-item d-flex justify-content-center">
+                <div class="user-card d-flex flex-column align-items-center w-100">
+                    <div class="user-profile text-center">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" class="user-avatar-large">
+                        {% else %}
+                        <div class="default-avatar-large">
+                            <i class="fas fa-user fa-3x"></i>
+                        </div>
+                        {% endif %}
+                        <div class="user-name mt-2 fw-bold">
+                            {{ user.real_name }}
+                            {% if user == request.user.profile %} 
+                                (me) 
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="user-info text-center mt-3">
+                        <div><strong>Email:</strong> {{ user.email }}</div>
+                        <div><strong>Join Date:</strong> {{ user.join_date|date:"F j, Y" }}</div>
+                        <div>
+                            <strong>Status:</strong>
+                            {% if user.is_librarian %}
+                                Gearmaster 
+                            {% else %}
+                                Patron
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="user-actions mt-3">
+                        {% if not user.is_librarian %}
+                        <form method="post" action="{% url 'gearshare:promote_user' user.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-accept">Promote to Gearmaster</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% else %}
+    <div class="no-requests">
+        <p>No users found.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

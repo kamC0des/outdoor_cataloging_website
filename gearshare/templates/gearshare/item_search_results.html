@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gearshare/item_search.css' %}">
+{% endblock %}
+
+{% block title %}Search Results for "{{ query }}" | GearShare{% endblock %}
+
+{% block content %}
+<div class="search-results-container">
+    <h1 class="search-header">Search Results for "{{ query }}"</h1>
+    
+    {% if results %}
+    <div class="results-grid">
+        {% for item in results %}
+        <div class="result-card" >
+            <div class="result-image-container">
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="result-image">
+            </div>
+            <div class="result-info">
+                <h3 class="result-title">{{ item.title }}</h3>
+                <p class="result-description">{{ item.description|truncatewords:25 }}</p>
+                
+                <div class="result-meta">
+                    <span class="result-location"><i class="fas fa-map-marker-alt"></i> {{ item.location }}</span>
+                    <span class="result-condition">Condition: {{ item.condition }}</span>
+                </div>
+                
+                <div class="result-rating">
+                    <div class="stars">
+                        {% for i in "12345" %}
+                            {% if i|add:0 <= item.average_rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="rating-value">{{ item.average_rating|floatformat:1 }}</span>
+                </div>
+                
+                <div class="result-status-container">
+                    <span class="result-status {% if item.status|lower == 'checked_in' %}status-available{% else %}status-unavailable{% endif %}">
+                        {{ item.status }}
+                    </span>
+                    <a href="{% url 'gearshare:item_detail' slug=item.slug id=item.id %}" class="view-details-btn">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results">
+        <p>No results found for "{{ query }}".</p>
+        <a href="{% url 'gearshare:items' %}" class="btn btn-primary">
+            Browse All Items
+        </a>
+    </div>
+    {% endif %}
+    
+    <a href="{% url 'gearshare:items' %}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to All Items
+    </a>
+</div>
+{% endblock %}

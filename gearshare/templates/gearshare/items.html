@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap5 %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'gearshare/base.css' %}">
+<link rel="stylesheet" href="{% static 'gearshare/items.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/b1a82e13ac.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+<div class="items-container">
+    <!-- Search bar moved to a block that can be overridden in base.html if needed -->
+    {% block search_bar %}
+    <div class="search-container">
+        <form action="{% url 'gearshare:search' %}" method="GET">
+            <div class="search-bar">
+                <input type="text" name="q" placeholder="Search..." value="{{ query }}">
+                <input type="text" name="category" placeholder="Category" value="{{ request.GET.category }}">
+                <input type="text" name="location" placeholder="Location" value="{{ request.GET.location }}">
+                <button type="submit">Search</button>
+                <a href="{% url 'gearshare:items' %}" class="reset">Reset Search</a>
+            </div>
+        </form>
+    </div>
+    {% endblock %}
+
+    <!-- item list goes here -->
+    <div class="item-grid">
+        {% for item in items %}
+        <div class="item-card">
+            <a href="{% url 'gearshare:item_detail' slug=item.slug id=item.id %}">
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="item-image">
+                <span>{{ item.title }}</span>
+            </a>
+        </div>
+        {% empty %}
+        <p>No items available at the moment.</p>
+        {% endfor %}
+    </div>
+
+    {% if request.session.user_data.is_librarian %}
+    <!-- Button trigger modal -->
+    <div style="display: flex; justify-content: center;">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+            Add new item
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">New Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'gearshare:items' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success">Add Item</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

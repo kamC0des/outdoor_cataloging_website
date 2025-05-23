@@ -1,0 +1,28 @@
+.edit-collection-container {
+    padding: 2rem 0;
+}
+
+.card {
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: #49914A;
+    color: white;
+    padding: 0.75rem 1.25rem;
+}
+
+.form-select[multiple] {
+    height: auto;
+    min-height: 150px;
+}
+
+.list-group-item {
+    padding: 0.75rem 1.25rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}

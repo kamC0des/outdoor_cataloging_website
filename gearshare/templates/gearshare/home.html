@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gearshare/base.css' %}">
+<link rel="stylesheet" href="{% static 'gearshare/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <!-- Cards Section -->
+    <div class="cards-container" style="display: flex; flex-direction: row; justify-content: center">
+
+        <div class="card" style=" width: 250px">
+            <a href="{% url 'gearshare:items' %}" style="text-decoration: none">
+                <img src="https://gearshare-2025swe-bucket.s3.us-east-2.amazonaws.com/images/hiking_boots.jpg" alt="Items" class="card-img">
+                <div class="card-body">
+                    <h3>Popular Items</h3>
+                    <p>Explore our supply of outdoor gear available for sharing or borrowing.</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="card" style="  width: 250px;">
+            <a href="{% url 'gearshare:collections' %}" style="text-decoration: none">
+                <img src="https://gearshare-2025swe-bucket.s3.us-east-2.amazonaws.com/images/bikke.jpg" alt="Collections" class="card-img">
+                <div class="card-body">
+                <div class="card-body">
+                    <h3>Popular Collections</h3>
+                    <p>View and manage various collections of outdoor gear curated by users.</p>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+{% endblock %}
